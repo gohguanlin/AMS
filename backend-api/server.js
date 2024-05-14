@@ -4,8 +4,20 @@ const cors = require("cors");
 
 const app = express();
 
-var corsOptions = {
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:8081"
+// var corsOptions = {
+//   origin: process.env.CLIENT_ORIGIN || "http://localhost:8888"
+// };
+
+const allowedOrigins = ["http://localhost:8888", "http://127.0.0.1:8888"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
 };
 
 app.use(cors(corsOptions));
@@ -26,7 +38,7 @@ db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to AMS." });
 });
 
 require("./app/routes/turorial.routes")(app);
